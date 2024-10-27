@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cipher</title>
     <link rel="stylesheet" href="style.css">
-    <title>Penyulitan Caesar Cipher</title>
+	<link href="https://fonts.googleapis.com/css2?family=Kablammo&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>Penyulitan dan Penyahsulitan Caesar Cipher</h1>
-        <textarea id="teks_asal" placeholder="Masukkan teks di sini"></textarea>
-        <input type="number" id="shift" placeholder="Masukkan nilai shift">
-        <select id="pilihan">
-            <option value="1">Penyulitan</option>
-            <option value="2">Penyahsulitan</option>
+        <h1>Cipher Encryption and Decryption</h1>
+
+        <label for="cipher-select">Choose a Cipher:</label>
+        <select id="cipher-select">
+            <option value="caesar">Caesar Cipher</option>
+            <option value="vigenere">Vigenère Cipher</option>
         </select>
-        <button id="submit">Hasilkan</button>
-        <h2>Hasil:</h2>
-        <div id="hasil"></div>
+
+        <label for="input-text">Input Text:</label>
+        <textarea id="input-text" rows="4" placeholder="Enter your message..."></textarea>
+
+        <label for="key">Key:</label>
+        <input type="text" id="key" placeholder="Enter key...">
+
+        <button onclick="encrypt()">Encrypt</button>
+        <button onclick="decrypt()">Decrypt</button>
+
+        <h3>Result:</h3>
+        <p id="result"></p>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
