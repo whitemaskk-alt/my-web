@@ -1,38 +1,73 @@
-document.getElementById("submit").addEventListener("click", function() {
-    // Mendapatkan nilai daripada input pengguna
-    let teksAsal = document.getElementById("teks_asal").value;
-    let shift = parseInt(document.getElementById("shift").value);
-    let pilihan = document.getElementById("pilihan").value;
-    let hasil = "";
-
-    // Fungsi penyulitan Caesar cipher
-    function caesarCipher(teks, shift, mode) {
-        let hasilTeks = "";
-        shift = mode === "1" ? shift : -shift; // Menentukan jika penyulitan (+) atau penyahsulitan (-)
-        for (let i = 0; i < teks.length; i++) {
-            let char = teks[i];
-            
-            if (char.match(/[a-z]/i)) {  // Hanya untuk huruf
-                let code = teks.charCodeAt(i);
-                let asciiOffset = code >= 65 && code <= 90 ? 65 : 97; // Untuk huruf besar dan kecil
-                
-                // Caesar Cipher untuk huruf
-                let shiftedChar = String.fromCharCode(((code - asciiOffset + shift) % 26 + 26) % 26 + asciiOffset);
-                hasilTeks += shiftedChar;
-            } else {
-                hasilTeks += char; // Simbol dan angka tidak berubah
-            }
+function caesarCipher(text, key, encrypt = true) {
+    const shift = encrypt ? key : -key;
+    return text.split('').map(char => {
+        let code = char.charCodeAt(0);
+        if (code >= 65 && code <= 90) {
+            // Uppercase letters
+            return String.fromCharCode(((code - 65 + shift + 26) % 26) + 65);
+        } else if (code >= 97 && code <= 122) {
+            // Lowercase letters
+            return String.fromCharCode(((code - 97 + shift + 26) % 26) + 97);
+        } else {
+            // Non-alphabetic characters
+            return char;
         }
-        return hasilTeks;
-    }
+    }).join('');
+}
 
-    // Menentukan sama ada pengguna ingin menyulitkan atau menyahsulitkan
-    if (pilihan === "1") {
-        hasil = caesarCipher(teksAsal, shift, "1"); // Penyulitan
-    } else if (pilihan === "2") {
-        hasil = caesarCipher(teksAsal, shift, "2"); // Penyahsulitan
+function vigenereCipher(text, key, encrypt = true) {
+    key = key.toLowerCase();
+    let result = '';
+    let keyIndex = 0;
+    
+    for (let i = 0; i < text.length; i++) {
+        let code = text.charCodeAt(i);
+        if (code >= 65 && code <= 90) {
+            let shift = (key.charCodeAt(keyIndex % key.length) - 97) * (encrypt ? 1 : -1);
+            result += String.fromCharCode(((code - 65 + shift + 26) % 26) + 65);
+            keyIndex++;
+        } else if (code >= 97 && code <= 122) {
+            let shift = (key.charCodeAt(keyIndex % key.length) - 97) * (encrypt ? 1 : -1);
+            result += String.fromCharCode(((code - 97 + shift + 26) % 26) + 97);
+            keyIndex++;
+        } else {
+            result += text[i];
+        }
     }
+    
+    return result;
+}
 
-    // Memaparkan hasil pada skrin
-    document.getElementById("hasil").textContent = hasil;
-});
+function encrypt() {
+    const cipherType = document.getElementById("cipher-select").value;
+    const inputText = document.getElementById("input-text").value;
+    const key = document.getElementById("key").value;
+    
+    let result = '';
+    
+    if (cipherType === "caesar") {
+        const shift = parseInt(key);
+        result = caesarCipher(inputText, shift, true);
+    } else if (cipherType === "vigenere") {
+        result = vigenereCipher(inputText, key, true);
+    }
+    
+    document.getElementById("result").innerText = result;
+}
+
+function decrypt() {
+    const cipherType = document.getElementById("cipher-select").value;
+    const inputText = document.getElementById("input-text").value;
+    const key = document.getElementById("key").value;
+    
+    let result = '';
+    
+    if (cipherType === "caesar") {
+        const shift = parseInt(key);
+        result = caesarCipher(inputText, shift, false);
+    } else if (cipherType === "vigenere") {
+        result = vigenereCipher(inputText, key, false);
+    }
+    
+    document.getElementById("result").innerText = result;
+}
